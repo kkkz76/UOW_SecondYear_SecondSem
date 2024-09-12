@@ -1,0 +1,114 @@
+scala> //Name               :Khant Ko Ko Zaw
+
+scala> //Student Number   : 8219035
+
+scala> //Assignment3, Task 3
+
+scala> 
+
+scala> 
+
+scala> //(1) Load the contents of a file sales.txt located in HDFS into a Resilient Distributed Dataset (RDD) and use RDD to find the total sales pert part.
+
+scala> 
+
+scala> val sales = sc.textFile("/user/bigdata/A3T3/sales.txt")
+sales: org.apache.spark.rdd.RDD[String] = /user/bigdata/A3T3/sales.txt MapPartitionsRDD[39] at textFile at <console>:24
+
+scala> val pairs = sales.map(a=>(a.split(" ") (0),(a.split(" ") (1).toInt))) 
+pairs: org.apache.spark.rdd.RDD[(String, Int)] = MapPartitionsRDD[40] at map at <console>:25
+
+scala> pairs.collect()
+res10: Array[(String, Int)] = Array((bolt,45), (washer,3), (screw,67), (screw,23), (nail,5), (screw,78), (coupler,36), (bolt,5), (bolt,1), (drill,1), (drill,1), (file,36), (file,28), (washer,56), (washer,7), (bolt,10), (saw,2), (coupler,50), (plier,20), (washer,88), (nail,33))
+
+scala> 
+
+scala> val results = pairs.reduceByKey((a,b)=>a+b)
+results: org.apache.spark.rdd.RDD[(String, Int)] = ShuffledRDD[41] at reduceByKey at <console>:25
+
+scala> results.collect()
+res11: Array[(String, Int)] = Array((screw,168), (plier,20), (nail,38), (washer,154), (coupler,86), (file,64), (bolt,61), (saw,2), (drill,2))
+
+scala> 
+
+scala> results.foreach(println)
+(bolt,61)
+(saw,2)
+(drill,2)
+(screw,168)
+(plier,20)
+(nail,38)
+(washer,154)
+(coupler,86)
+(file,64)
+
+scala> //(2) Load the contents of a file sales.txt located in HDFS into a Dataset and use the Dataset to find the total sales pert part.
+
+scala> 
+
+scala> case class sales (part:String, quantity: Long)
+defined class sales
+
+scala> val salesData = sc.textFile("/user/bigdata/A3T3/sales.txt")
+salesData: org.apache.spark.rdd.RDD[String] = /user/bigdata/A3T3/sales.txt MapPartitionsRDD[43] at textFile at <console>:24
+
+scala> val partDS = salesData.map(_.split(" ")).map(attributes=>sales(attributes(0),attributes(1).toInt)).toDS()
+partDS: org.apache.spark.sql.Dataset[sales] = [part: string, quantity: bigint]
+
+scala> 
+
+scala> val totalResult=partDS.groupBy("part").sum("quantity")
+totalResult: org.apache.spark.sql.DataFrame = [part: string, sum(quantity): bigint]
+
+scala> totalResult.show()
++-------+-------------+
+|   part|sum(quantity)|
++-------+-------------+
+|    saw|            2|
+| washer|          154|
+|   bolt|           61|
+|coupler|           86|
+|   nail|           38|
+|   file|           64|
+|  screw|          168|
+|  drill|            2|
+|  plier|           20|
++-------+-------------+
+
+
+scala> //(3) Load the contents of a file sales.txt located in HDFS into a DataFrame and use SQL to find the total sales pert part.
+
+scala> 
+
+scala> case class sales (part:String, quantity: Long)
+defined class sales
+
+scala> val salesData = sc.textFile("/user/bigdata/A3T3/sales.txt")
+salesData: org.apache.spark.rdd.RDD[String] = /user/bigdata/A3T3/sales.txt MapPartitionsRDD[53] at textFile at <console>:24
+
+scala> val partDF=salesData.map(_.split(" ")).map(attributes=>sales(attributes(0),attributes(1).trim.toInt)).toDF()
+partDF: org.apache.spark.sql.DataFrame = [part: string, quantity: bigint]
+
+scala> partDF.createOrReplaceTempView("partView")
+
+scala> val sqlDF = spark.sql ("select part, sum(quantity) from partView group by part")
+sqlDF: org.apache.spark.sql.DataFrame = [part: string, sum(quantity): bigint]
+
+scala> sqlDF.show()
++-------+-------------+
+|   part|sum(quantity)|
++-------+-------------+
+|    saw|            2|
+| washer|          154|
+|   bolt|           61|
+|coupler|           86|
+|   nail|           38|
+|   file|           64|
+|  screw|          168|
+|  drill|            2|
+|  plier|           20|
++-------+-------------+
+
+
+scala> 
+

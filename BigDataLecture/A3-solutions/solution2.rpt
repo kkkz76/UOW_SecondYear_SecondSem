@@ -1,0 +1,178 @@
+HBase Shell; enter 'help<RETURN>' for list of supported commands.
+Type "exit<RETURN>" to leave the HBase Shell
+Version 1.2.6, rUnknown, Mon May 29 02:25:32 CDT 2017
+
+#Name		:Khant Ko Ko Zaw
+#Student Number :8219035
+#Assignment 3 , Task 2
+
+#1 Find all information about a student number 007, list one version per cell.
+
+get 'task2', 'student|007', {COLUMN => 'STUDENT',VERSIONS => 1}
+COLUMN  CELL
+ STUDENT:degree timestamp=1716801575745, value=MIT
+ STUDENT:fname timestamp=1716801575728, value=James
+ STUDENT:lname timestamp=1716801575742, value=Bond
+ STUDENT:snumber timestamp=1716801575725, value=007
+4 row(s) in 0.2910 seconds
+
+
+
+#2 Find all information about a submission of assignment 1 performed by a student 007 in a subject 312, list one version per cell.
+
+get 'task2', 'submission|007|312|assignment|1', {COLUMN => 'SUBMISSION',VERSIONS => 1}
+COLUMN  CELL
+ SUBMISSION:dayslate timestamp=1716801575862, value=0
+ SUBMISSION:esignature timestamp=1716801575848, value=jb
+ SUBMISSION:sdate timestamp=1716801575834, value=01-APR-2017
+ SUBMISSION:tnumber timestamp=1716801575903, value=1
+ SUBMISSION:totalfiles timestamp=1716801575854, value=2
+ SUBMISSION:type timestamp=1716801575892, value=assignment
+6 row(s) in 0.0150 seconds
+
+
+
+#3 Find the first and the last names of all students, list one version per cell.
+
+scan 'task2', {COLUMNS => ['STUDENT:fname' , 'STUDENT:lname'], VERSIONS => 1}
+ROW  COLUMN+CELL
+ student|007 column=STUDENT:fname, timestamp=1716801575728, value=James
+ student|007 column=STUDENT:lname, timestamp=1716801575742, value=Bond
+ student|666 column=STUDENT:fname, timestamp=1716801575756, value=Harry
+ student|666 column=STUDENT:lname, timestamp=1716801575759, value=Potter
+2 row(s) in 0.0460 seconds
+
+
+#4 Find all information about a student whose last name is Potter, list one version per cell.
+
+scan 'task2', { FILTER => "PrefixFilter('student|') AND SingleColumnValueFilter('STUDENT', 'lname', =, 'binary:Potter')",COLUMN => 'STUDENT', VERSIONS => 1}
+ROW  COLUMN+CELL
+ student|666 column=STUDENT:degree, timestamp=1716801575765, value=BCS
+ student|666 column=STUDENT:fname, timestamp=1716801575756, value=Harry
+ student|666 column=STUDENT:lname, timestamp=1716801575759, value=Potter
+ student|666 column=STUDENT:snumber, timestamp=1716801575750, value=666
+1 row(s) in 0.0530 seconds
+
+
+#5 Delete a column family FILES.
+
+disable 'task2'
+0 row(s) in 2.3240 seconds
+
+alter 'task2', NAME => 'FILES', METHOD => 'delete'
+Updating all regions with the new schema...
+1/1 regions updated.
+Done.
+0 row(s) in 1.9010 seconds
+
+enable 'task2'
+0 row(s) in 1.2290 seconds
+
+
+#6 Add a column family ENROLMENT that contains information about dates when the subjects have been enrolled by the students and allow for 2 versions in each cell of the column family.
+
+alter 'task2', {NAME=>'ENROLMENT', VERSIONS=>'2'}
+Updating all regions with the new schema...
+1/1 regions updated.
+Done.
+0 row(s) in 1.8850 seconds
+
+describe 'task2'
+Table task2 is ENABLED
+task2
+COLUMN FAMILIES DESCRIPTION
+{NAME => 'ENROLMENT', BLOOMFILTER => 'ROW', VERSIONS => '2', IN_MEMORY => 'false', KEEP_DELETED_CELLS => 'FALSE', DATA_BLOCK_ENCODING => 'NONE', TTL => 'FOREVER', COMPRESSION => 'NONE', MIN_VERSIONS => '0', BLOCKCACHE => 'true', BLOCKSIZE => '65536', REPLICATION_SCOPE => '0'}
+{NAME => 'STUDENT', BLOOMFILTER => 'ROW', VERSIONS => '1', IN_MEMORY => 'false', KEEP_DELETED_CELLS => 'FALSE', DATA_BLOCK_ENCODING => 'NONE', TTL => 'FOREVER', COMPRESSION => 'NONE', MIN_VERSIONS => '0', BLOCKCACHE => 'true', BLOCKSIZE => '65536', REPLICATION_SCOPE => '0'}
+{NAME => 'SUBJECT', BLOOMFILTER => 'ROW', VERSIONS => '1', IN_MEMORY => 'false', KEEP_DELETED_CELLS => 'FALSE', DATA_BLOCK_ENCODING => 'NONE', TTL => 'FOREVER', COMPRESSION => 'NONE', MIN_VERSIONS => '0', BLOCKCACHE => 'true', BLOCKSIZE => '65536', REPLICATION_SCOPE => '0'}
+{NAME => 'SUBMISSION', BLOOMFILTER => 'ROW', VERSIONS => '1', IN_MEMORY => 'false', KEEP_DELETED_CELLS => 'FALSE', DATA_BLOCK_ENCODING => 'NONE', TTL => 'FOREVER', COMPRESSION => 'NONE', MIN_VERSIONS => '0', BLOCKCACHE => 'true', BLOCKSIZE => '65536', REPLICATION_SCOPE => '0'}
+4 row(s) in 0.0600 seconds
+
+
+#7  Insert information about at least two enrolments performed by the students.
+
+
+put 'task2','enrolment|007|312','ENROLMENT:edate','03-AUG-2000'
+0 row(s) in 0.0340 seconds
+
+put 'task2','enrolment|007|312','STUDENT:snumber','007'
+0 row(s) in 0.0040 seconds
+
+put 'task2','enrolment|007|312','SUBJECT:code','312'
+0 row(s) in 0.0080 seconds
+
+
+put 'task2','enrolment|007|313','ENROLMENT:edate','04-AUG-2000'
+0 row(s) in 0.0060 seconds
+
+put 'task2','enrolment|007|313','STUDENT:snumber','007'
+0 row(s) in 0.0040 seconds
+
+put 'task2','enrolment|007|313','SUBJECT:code','313'
+0 row(s) in 0.0070 seconds
+
+
+
+put 'task2','enrolment|666|312','ENROLMENT:edate','05-AUG-2000'
+0 row(s) in 0.0030 seconds
+
+put 'task2','enrolment|666|312','STUDENT:snumber','666'
+0 row(s) in 0.0060 seconds
+
+put 'task2','enrolment|666|312','SUBJECT:code','312'
+0 row(s) in 0.0040 seconds
+
+
+put 'task2','enrolment|666|313','ENROLMENT:edate','06-AUG-2000'
+0 row(s) in 0.0110 seconds
+
+put 'task2','enrolment|666|313','STUDENT:snumber','666'
+0 row(s) in 0.0090 seconds
+
+put 'task2','enrolment|666|313','SUBJECT:code','313'
+0 row(s) in 0.0040 seconds
+
+
+#(8) List information about all enrolments performed by the students.
+scan 'task2',{COLUMN=>'ENROLMENT'}
+ROW  COLUMN+CELL
+ enrolment|007|312 column=ENROLMENT:edate, timestamp=1716801621415, value=03-AUG-2000
+ enrolment|007|313 column=ENROLMENT:edate, timestamp=1716801621452, value=04-AUG-2000
+ enrolment|666|312 column=ENROLMENT:edate, timestamp=1716801621489, value=05-AUG-2000
+ enrolment|666|313 column=ENROLMENT:edate, timestamp=1716801621526, value=06-AUG-2000
+4 row(s) in 0.0080 seconds
+
+
+#(9) Increase the total number of versions in each cell of a column family ENROLMENT.
+
+alter 'task2', {NAME=>'ENROLMENT', VERSIONS=>'3'}
+Updating all regions with the new schema...
+1/1 regions updated.
+Done.
+0 row(s) in 1.8840 seconds
+
+describe 'task2'
+Table task2 is ENABLED
+task2
+COLUMN FAMILIES DESCRIPTION
+{NAME => 'ENROLMENT', BLOOMFILTER => 'ROW', VERSIONS => '3', IN_MEMORY => 'false', KEEP_DELETED_CELLS => 'FALSE', DATA_BLOCK_ENCODING => 'NONE', TTL => 'FOREVER', COMPRESSION => 'NONE', MIN_VERSIONS => '0', BLOCKCACHE => 'true', BLOCKSIZE => '65536', REPLICATION_SCOPE => '0'}
+{NAME => 'STUDENT', BLOOMFILTER => 'ROW', VERSIONS => '1', IN_MEMORY => 'false', KEEP_DELETED_CELLS => 'FALSE', DATA_BLOCK_ENCODING => 'NONE', TTL => 'FOREVER', COMPRESSION => 'NONE', MIN_VERSIONS => '0', BLOCKCACHE => 'true', BLOCKSIZE => '65536', REPLICATION_SCOPE => '0'}
+{NAME => 'SUBJECT', BLOOMFILTER => 'ROW', VERSIONS => '1', IN_MEMORY => 'false', KEEP_DELETED_CELLS => 'FALSE', DATA_BLOCK_ENCODING => 'NONE', TTL => 'FOREVER', COMPRESSION => 'NONE', MIN_VERSIONS => '0', BLOCKCACHE => 'true', BLOCKSIZE => '65536', REPLICATION_SCOPE => '0'}
+{NAME => 'SUBMISSION', BLOOMFILTER => 'ROW', VERSIONS => '1', IN_MEMORY => 'false', KEEP_DELETED_CELLS => 'FALSE', DATA_BLOCK_ENCODING => 'NONE', TTL => 'FOREVER', COMPRESSION => 'NONE', MIN_VERSIONS => '0', BLOCKCACHE => 'true', BLOCKSIZE => '65536', REPLICATION_SCOPE => '0'}
+4 row(s) in 0.0120 seconds
+
+
+#(10) Delete HBase table task2.
+
+disable 'task2'
+0 row(s) in 2.2350 seconds
+
+drop 'task2'
+0 row(s) in 1.2280 seconds
+
+list
+TABLE
+CF
+OFFICE
+2 row(s) in 0.0080 seconds
+
+["CF", "OFFICE"]

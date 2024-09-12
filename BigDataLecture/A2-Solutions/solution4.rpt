@@ -1,0 +1,164 @@
+>>>  CREATE EXTERNAL TABLE IF NOT EXISTS part ( 
+p_partkey INT, 
+p_name STRING, 
+p_mfgr STRING, 
+p_brand STRING, 
+p_type STRING, 
+p_size INT, 
+p_container STRING, 
+p_retailprice FLOAT, 
+p_comment STRING 
+) 
+ROW FORMAT DELIMITED 
+FIELDS TERMINATED BY '|' 
+STORED AS TEXTFILE LOCATION '/user/bigdata/Part';
+No rows affected (0.066 seconds)
+>>>  
+>>>  
+>>>  
+>>>  CREATE EXTERNAL TABLE IF NOT EXISTS partsupp ( 
+ps_partkey INT, 
+ps_suppkey INT, 
+ps_availqty INT, 
+ps_supplycost FLOAT, 
+ps_comment STRING 
+) 
+ROW FORMAT DELIMITED 
+FIELDS TERMINATED BY '|' 
+STORED AS TEXTFILE LOCATION '/user/bigdata/PartSupp';
+No rows affected (0.077 seconds)
+>>>  
+>>>  
+>>>  
+>>>  CREATE EXTERNAL TABLE IF NOT EXISTS supplier ( 
+s_suppkey INT, 
+s_name STRING, 
+s_address STRING, 
+s_nationkey INT, 
+s_phone STRING, 
+s_acctbal FLOAT, 
+s_comment STRING 
+) 
+ROW FORMAT DELIMITED 
+FIELDS TERMINATED BY '|' 
+STORED AS TEXTFILE LOCATION '/user/bigdata/Supp';
+No rows affected (0.097 seconds)
+>>>  
+>>>  
+>>>  
+>>>  
+>>>  desc part;
++----------------+------------+----------+--+
+|    col_name    | data_type  | comment  |
++----------------+------------+----------+--+
+| p_partkey      | int        |          |
+| p_name         | string     |          |
+| p_mfgr         | string     |          |
+| p_brand        | string     |          |
+| p_type         | string     |          |
+| p_size         | int        |          |
+| p_container    | string     |          |
+| p_retailprice  | float      |          |
+| p_comment      | string     |          |
++----------------+------------+----------+--+
+9 rows selected (0.053 seconds)
+>>>  
+>>>  SELECT * FROM part LIMIT 5;
++-----------------+-----------------------------------------+-----------------+---------------+--------------------------+--------------+-------------------+---------------------+-------------------------+--+
+| part.p_partkey  |               part.p_name               |   part.p_mfgr   | part.p_brand  |       part.p_type        | part.p_size  | part.p_container  | part.p_retailprice  |     part.p_comment      |
++-----------------+-----------------------------------------+-----------------+---------------+--------------------------+--------------+-------------------+---------------------+-------------------------+--+
+| 1               | goldenrod lace spring peru powder       | Manufacturer#1  | Brand#13      | PROMO BURNISHED COPPER   | 7            | JUMBO PKG         | 901.0               | final deposits s        |
+| 2               | blush rosy metallic lemon navajo        | Manufacturer#1  | Brand#13      | LARGE BRUSHED BRASS      | 1            | LG CASE           | 902.0               | final platelets hang f  |
+| 3               | dark green antique puff wheat           | Manufacturer#4  | Brand#42      | STANDARD POLISHED BRASS  | 21           | WRAP CASE         | 903.0               | unusual excuses ac      |
+| 4               | chocolate metallic smoke ghost drab     | Manufacturer#3  | Brand#34      | SMALL PLATED BRASS       | 14           | MED DRUM          | 904.0               | ironi                   |
+| 5               | forest blush chiffon thistle chocolate  | Manufacturer#3  | Brand#32      | STANDARD POLISHED TIN    | 15           | SM PKG            | 905.0               | pending, spe            |
++-----------------+-----------------------------------------+-----------------+---------------+--------------------------+--------------+-------------------+---------------------+-------------------------+--+
+5 rows selected (0.169 seconds)
+>>>  
+>>>  SELECT COUNT(*) AS Total_Roll_Count FROM part;
+WARNING: Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. spark, tez) or using Hive 1.X releases.
++-------------------+--+
+| total_roll_count  |
++-------------------+--+
+| 60000             |
++-------------------+--+
+1 row selected (22.271 seconds)
+>>>  
+>>>  
+>>>  
+>>>  desc supplier;
++--------------+------------+----------+--+
+|   col_name   | data_type  | comment  |
++--------------+------------+----------+--+
+| s_suppkey    | int        |          |
+| s_name       | string     |          |
+| s_address    | string     |          |
+| s_nationkey  | int        |          |
+| s_phone      | string     |          |
+| s_acctbal    | float      |          |
+| s_comment    | string     |          |
++--------------+------------+----------+--+
+7 rows selected (0.056 seconds)
+>>>  
+>>>  SELECT * FROM supplier LIMIT 5;
++---------------------+---------------------+--------------------------------------+-----------------------+-------------------+---------------------+------------------------------------------------------------------------------------------------+--+
+| supplier.s_suppkey  |   supplier.s_name   |          supplier.s_address          | supplier.s_nationkey  | supplier.s_phone  | supplier.s_acctbal  |                                       supplier.s_comment                                       |
++---------------------+---------------------+--------------------------------------+-----------------------+-------------------+---------------------+------------------------------------------------------------------------------------------------+--+
+| 1                   | Supplier#000000001  |  N kD4on9OM Ipw3,gf0JBoQDd7tgrzrddZ  | 17                    | 27-918-335-1736   | 5755.94             | requests haggle carefully. accounts sublate finally. carefully ironic pa                       |
+| 2                   | Supplier#000000002  | 89eJ5ksX3ImxJQBvxObC,                | 5                     | 15-679-861-2259   | 4032.68             | furiously stealthy frays thrash alongside of the slyly express deposits. blithely regular req  |
+| 3                   | Supplier#000000003  | q1,G3Pj6OjIuUYfUoH18BFTKP5aU9bEV3    | 1                     | 11-383-516-1199   | 4192.4              | furiously regular instructions impress slyly! carefu                                           |
+| 4                   | Supplier#000000004  | Bk7ah4CK8SYQTepEmvMkkgMwg            | 15                    | 25-843-787-7479   | 4641.08             | final ideas cajole. furiously close dep                                                        |
+| 5                   | Supplier#000000005  | Gcdm2rJRzl5qlTVzc                    | 11                    | 21-151-690-3663   | -283.84             | carefully silent instructions are slyly according t                                            |
++---------------------+---------------------+--------------------------------------+-----------------------+-------------------+---------------------+------------------------------------------------------------------------------------------------+--+
+5 rows selected (0.189 seconds)
+>>>  
+>>>  SELECT COUNT(*) AS Total_Roll_Count FROM supplier;
+WARNING: Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. spark, tez) or using Hive 1.X releases.
++-------------------+--+
+| total_roll_count  |
++-------------------+--+
+| 3000              |
++-------------------+--+
+1 row selected (22.512 seconds)
+>>>  
+>>>  
+>>>  desc partsupp;
++----------------+------------+----------+--+
+|    col_name    | data_type  | comment  |
++----------------+------------+----------+--+
+| ps_partkey     | int        |          |
+| ps_suppkey     | int        |          |
+| ps_availqty    | int        |          |
+| ps_supplycost  | float      |          |
+| ps_comment     | string     |          |
++----------------+------------+----------+--+
+5 rows selected (0.081 seconds)
+>>>  
+>>>  SELECT * FROM partsupp LIMIT 5;
++----------------------+----------------------+-----------------------+-------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--+
+| partsupp.ps_partkey  | partsupp.ps_suppkey  | partsupp.ps_availqty  | partsupp.ps_supplycost  |                                                                                       partsupp.ps_comment                                                                                        |
++----------------------+----------------------+-----------------------+-------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--+
+| 1                    | 2                    | 3325                  | 771.64                  | requests after the carefully ironic ideas cajole alongside of the enticingly special accounts. fluffily regular deposits haggle about the blithely ironic deposits. regular requests sleep c     |
+| 1                    | 752                  | 8076                  | 993.49                  | careful pinto beans wake slyly furiously silent pinto beans. accounts wake pendi                                                                                                                 |
+| 1                    | 1502                 | 3956                  | 337.09                  | boldly silent requests detect. quickly regular courts are. instructions haggle ironic foxes. sometimes final orbits cajole fluffily around the unusual foxes. slyly silent theodolites cajole r  |
+| 1                    | 2252                 | 4069                  | 357.84                  | regular deposits are. furiously even packages cajole furiously. even pinto beans boost furiously final dependencies. f                                                                           |
+| 2                    | 3                    | 8895                  | 378.49                  | furiously even asymptotes are furiously regular plate                                                                                                                                            |
++----------------------+----------------------+-----------------------+-------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--+
+5 rows selected (0.223 seconds)
+>>>  
+>>>  
+>>>  SELECT COUNT(*) AS Total_Roll_Count FROM partsupp;
+WARNING: Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. spark, tez) or using Hive 1.X releases.
++-------------------+--+
+| total_roll_count  |
++-------------------+--+
+| 240000            |
++-------------------+--+
+1 row selected (23.462 seconds)
+>>>  
+>>>  
+>>>  
+>>>  
+>>>  
+>>>  
+>>>  

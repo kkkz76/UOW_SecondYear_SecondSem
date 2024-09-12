@@ -1,0 +1,157 @@
+HBase Shell; enter 'help<RETURN>' for list of supported commands.
+Type "exit<RETURN>" to leave the HBase Shell
+Version 1.2.6, rUnknown, Mon May 29 02:25:32 CDT 2017
+
+#Name 		: Khant Ko Ko Zaw
+#Student Number : 8219035
+#Assignment 3 , Task 1
+
+
+#create Hbase Table
+
+create 'OFFICE', 'DEPARTMENT', 'EMPLOYEE', 'PROJECT'
+0 row(s) in 2.4240 seconds
+
+Hbase::Table - OFFICE
+
+describe 'OFFICE'
+Table OFFICE is ENABLED
+OFFICE
+COLUMN FAMILIES DESCRIPTION
+{NAME => 'DEPARTMENT', BLOOMFILTER => 'ROW', VERSIONS => '1', IN_MEMORY => 'false', KEEP_DELETED_CELLS => 'FALSE', DATA_BLOCK_ENCODING => 'NONE', TTL => 'FOREVER', COMPRESSION => 'NONE', MIN_VERSIONS => '0', BLOCKCACHE => 'true', BLOCKSIZE => '65536', REPLICATION_SCOPE => '0'}
+{NAME => 'EMPLOYEE', BLOOMFILTER => 'ROW', VERSIONS => '1', IN_MEMORY => 'false', KEEP_DELETED_CELLS => 'FALSE', DATA_BLOCK_ENCODING => 'NONE', TTL => 'FOREVER', COMPRESSION => 'NONE', MIN_VERSIONS => '0', BLOCKCACHE => 'true', BLOCKSIZE => '65536', REPLICATION_SCOPE => '0'}
+{NAME => 'PROJECT', BLOOMFILTER => 'ROW', VERSIONS => '1', IN_MEMORY => 'false', KEEP_DELETED_CELLS => 'FALSE', DATA_BLOCK_ENCODING => 'NONE', TTL => 'FOREVER', COMPRESSION => 'NONE', MIN_VERSIONS => '0', BLOCKCACHE => 'true', BLOCKSIZE => '65536', REPLICATION_SCOPE => '0'}
+3 row(s) in 0.1150 seconds
+
+
+#load data to DEPARTMENT
+put 'OFFICE', 'D1', 'DEPARTMENT:name', 'Finance'
+0 row(s) in 0.1010 seconds
+
+put 'OFFICE', 'D1', 'DEPARTMENT:budget', '500000'
+0 row(s) in 0.0110 seconds
+
+
+#load data tp PROJECT
+put 'OFFICE', 'P1', 'PROJECT:code', 'PJ001'
+0 row(s) in 0.0350 seconds
+
+put 'OFFICE', 'P1', 'PROJECT:title', 'Monthly Check'
+0 row(s) in 0.0100 seconds
+
+put 'OFFICE', 'P1', 'PROJECT:salary', '30000'
+0 row(s) in 0.0040 seconds
+
+
+put 'OFFICE', 'P2', 'PROJECT:code', 'PJ002'
+0 row(s) in 0.0050 seconds
+
+put 'OFFICE', 'P2', 'PROJECT:title', 'Bonus Pay Check'
+0 row(s) in 0.0040 seconds
+
+put 'OFFICE', 'P2', 'PROJECT:salary', '80000'
+0 row(s) in 0.0040 seconds
+
+
+#load data to EMPLOYEE
+put 'OFFICE', 'E1', 'EMPLOYEE:enumber', 'E001'
+0 row(s) in 0.0080 seconds
+
+put 'OFFICE', 'E1', 'EMPLOYEE:first-name', 'Mario'
+0 row(s) in 0.0100 seconds
+
+put 'OFFICE', 'E1', 'EMPLOYEE:last-name', 'Zaw'
+0 row(s) in 0.0040 seconds
+
+put 'OFFICE', 'E1', 'EMPLOYEE:salary', '7500'
+0 row(s) in 0.0120 seconds
+
+put 'OFFICE', 'E1', 'DEPARTMENT:name', 'Finance'
+0 row(s) in 0.0180 seconds
+
+put 'OFFICE', 'E1', 'DEPARTMENT:position', 'Manager'
+0 row(s) in 0.0050 seconds
+
+put 'OFFICE', 'E1', 'PROJECT:code', 'PJ001'
+0 row(s) in 0.0030 seconds
+
+
+put 'OFFICE', 'E2', 'EMPLOYEE:enumber', 'E002'
+0 row(s) in 0.0060 seconds
+
+put 'OFFICE', 'E2', 'EMPLOYEE:first-name', 'Peach'
+0 row(s) in 0.0050 seconds
+
+put 'OFFICE', 'E2', 'EMPLOYEE:last-name', 'Talyor'
+0 row(s) in 0.0040 seconds
+
+put 'OFFICE', 'E2', 'EMPLOYEE:salary', '3500'
+0 row(s) in 0.0150 seconds
+
+put 'OFFICE', 'E2', 'DEPARTMENT:name', 'Finance'
+0 row(s) in 0.0130 seconds
+
+put 'OFFICE', 'E2', 'PROJECT:code', 'PJ001'
+0 row(s) in 0.0050 seconds
+
+
+put 'OFFICE', 'E3', 'EMPLOYEE:enumber', 'E003'
+0 row(s) in 0.0060 seconds
+
+put 'OFFICE', 'E3', 'EMPLOYEE:first-name', 'Ko'
+0 row(s) in 0.0050 seconds
+
+put 'OFFICE', 'E3', 'EMPLOYEE:last-name', 'Mike'
+0 row(s) in 0.0060 seconds
+
+put 'OFFICE', 'E3', 'EMPLOYEE:salary', '4500'
+0 row(s) in 0.0070 seconds
+
+put 'OFFICE', 'E3', 'DEPARTMENT:name', 'Finance'
+0 row(s) in 0.0120 seconds
+
+put 'OFFICE', 'E3', 'PROJECT:code', 'PJ001'
+0 row(s) in 0.0030 seconds
+
+
+
+#scan table
+scan 'OFFICE', {COLUMN=>'DEPARTMENT'}
+ROW  COLUMN+CELL
+ D1 column=DEPARTMENT:budget, timestamp=1716790614777, value=500000
+ D1 column=DEPARTMENT:name, timestamp=1716790614698, value=Finance
+ E1 column=DEPARTMENT:name, timestamp=1716790614962, value=Finance
+ E1 column=DEPARTMENT:position, timestamp=1716790614977, value=Manager
+ E2 column=DEPARTMENT:name, timestamp=1716790615044, value=Finance
+ E3 column=DEPARTMENT:name, timestamp=1716790615120, value=Finance
+4 row(s) in 0.0240 seconds
+
+scan 'OFFICE', {COLUMN=>'EMPLOYEE'}
+ROW  COLUMN+CELL
+ E1 column=EMPLOYEE:enumber, timestamp=1716790614895, value=E001
+ E1 column=EMPLOYEE:first-name, timestamp=1716790614914, value=Mario
+ E1 column=EMPLOYEE:last-name, timestamp=1716790614926, value=Zaw
+ E1 column=EMPLOYEE:salary, timestamp=1716790614941, value=7500
+ E2 column=EMPLOYEE:enumber, timestamp=1716790614996, value=E002
+ E2 column=EMPLOYEE:first-name, timestamp=1716790615006, value=Peach
+ E2 column=EMPLOYEE:last-name, timestamp=1716790615014, value=Talyor
+ E2 column=EMPLOYEE:salary, timestamp=1716790615031, value=3500
+ E3 column=EMPLOYEE:enumber, timestamp=1716790615066, value=E003
+ E3 column=EMPLOYEE:first-name, timestamp=1716790615073, value=Ko
+ E3 column=EMPLOYEE:last-name, timestamp=1716790615087, value=Mike
+ E3 column=EMPLOYEE:salary, timestamp=1716790615101, value=4500
+3 row(s) in 0.0170 seconds
+
+scan 'OFFICE', {COLUMN=>'PROJECT'}
+ROW  COLUMN+CELL
+ E1 column=PROJECT:code, timestamp=1716790614987, value=PJ001
+ E2 column=PROJECT:code, timestamp=1716790615055, value=PJ001
+ E3 column=PROJECT:code, timestamp=1716790615127, value=PJ001
+ P1 column=PROJECT:code, timestamp=1716790614803, value=PJ001
+ P1 column=PROJECT:salary, timestamp=1716790614860, value=30000
+ P1 column=PROJECT:title, timestamp=1716790614844, value=Monthly Check
+ P2 column=PROJECT:code, timestamp=1716790614867, value=PJ002
+ P2 column=PROJECT:salary, timestamp=1716790614883, value=80000
+ P2 column=PROJECT:title, timestamp=1716790614875, value=Bonus Pay Check
+5 row(s) in 0.0270 seconds
+

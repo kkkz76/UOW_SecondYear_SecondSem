@@ -1,0 +1,48 @@
+>>>  CREATE TABLE employees ( 
+employee_number VARCHAR(30), 
+employee_name VARCHAR(30), 
+project MAP<STRING, INT>, 
+programming_skill ARRAY<STRING> 
+);
+No rows affected (0.107 seconds)
+>>>  
+>>>  desc employees;
++--------------------+------------------+----------+--+
+|      col_name      |    data_type     | comment  |
++--------------------+------------------+----------+--+
+| employee_number    | varchar(30)      |          |
+| employee_name      | varchar(30)      |          |
+| project            | map<string,int>  |          |
+| programming_skill  | array<string>    |          |
++--------------------+------------------+----------+--+
+4 rows selected (0.136 seconds)
+>>>  
+>>>  INSERT INTO employees select 'E001', 'Mario',MAP('DB/3', 30, 'Oracle', 25, 'SQL-2022', 100), array('Java', 'C', 'C++');
+WARNING: Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. spark, tez) or using Hive 1.X releases.
+No rows affected (13.151 seconds)
+>>>  INSERT INTO employees select 'E002', 'Luegi',MAP('DB/4', 20, 'Oracle', 70), array('Java', 'C');
+WARNING: Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. spark, tez) or using Hive 1.X releases.
+No rows affected (16.717 seconds)
+>>>  INSERT INTO employees select 'E003', 'Bowser',MAP('Oracle', 25, 'SQL-2022', 10), array(cast (null as string));
+WARNING: Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. spark, tez) or using Hive 1.X releases.
+No rows affected (17.164 seconds)
+>>>  INSERT INTO employees select 'E004', 'Peach',MAP(cast (null as string),cast (null as int)), array('Java', 'C', 'C++','C#');
+WARNING: Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. spark, tez) or using Hive 1.X releases.
+No rows affected (16.46 seconds)
+>>>  INSERT INTO employees select 'E005', 'Toad',MAP(cast (null as string),cast (null as int)), array(cast (null as string));
+WARNING: Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. spark, tez) or using Hive 1.X releases.
+No rows affected (16.216 seconds)
+>>>  
+>>>  
+>>>  select * from employees;
++----------------------------+--------------------------+-----------------------------------------+------------------------------+--+
+| employees.employee_number  | employees.employee_name  |            employees.project            | employees.programming_skill  |
++----------------------------+--------------------------+-----------------------------------------+------------------------------+--+
+| E001                       | Mario                    | {"DB/3":30,"Oracle":25,"SQL-2022":100}  | ["Java","C","C++"]           |
+| E002                       | Luegi                    | {"DB/4":20,"Oracle":70}                 | ["Java","C"]                 |
+| E003                       | Bowser                   | {"Oracle":25,"SQL-2022":10}             | NULL                         |
+| E004                       | Peach                    | {}                                      | ["Java","C","C++","C#"]      |
+| E005                       | Toad                     | {}                                      | NULL                         |
++----------------------------+--------------------------+-----------------------------------------+------------------------------+--+
+5 rows selected (0.267 seconds)
+>>>  
